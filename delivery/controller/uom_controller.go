@@ -11,17 +11,17 @@ type UomController struct {
 }
 
 func (u *UomController) UomMenuForm() {
-	fmt.Print(`
-	|		+++++ Master UOM +++++	|
-	| 1. Tambah Data				|
-	| 2. Lihat Data					|
-	| 3. Update Data				|
-	| 4. Hapus Data					|
-	| 5. Cari Data Berdasarkan Nama	|
-	| 6. Keluar                     |
+	fmt.Println()
+	fmt.Println(`
+	|		+++++ Master UOM +++++		|
+	| 1. Tambah Data					|
+	| 2. Lihat Data						|
+	| 3. Update Data					|
+	| 4. Hapus Data						|
+	| 5. Cari Data Berdasarkan Id		|
+	| 6. Keluar                     	|
 	`)
-
-	fmt.Print("Pilih Menu (1-6): ")
+	fmt.Print("Pilih Menu (1-6): \n")
 	var selectMenuUom string
 	fmt.Scanln(&selectMenuUom)
 	switch selectMenuUom {

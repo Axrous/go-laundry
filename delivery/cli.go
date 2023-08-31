@@ -11,6 +11,7 @@ import (
 
 type Console struct {
 	uomUseCase usecase.UomUseCase
+	productuseCase usecase.ProductUseCase
 }
 
 func (c *Console) showMainMenu() {
@@ -23,7 +24,7 @@ func (c *Console) showMainMenu() {
 	| 5. Transaksi                  |
 	| 6. Keluar                     |
 	`)
-	fmt.Println("Pilih Menu (1-6): ")
+	fmt.Print("Pilih Menu (1-6): ")
 }
 
 
@@ -37,6 +38,7 @@ func (c *Console) Run() {
 		case "1":
 			controller.NewUomController(c.uomUseCase).UomMenuForm()
 		case "2":
+			controller.NewProductController(c.productuseCase, c.uomUseCase).UProductMenuForm()
 		case "3":
 		case "4":
 		case "5":
@@ -56,9 +58,16 @@ func NewConsole() *Console {
 		fmt.Println(err)
 	}
 	db := con.Conn()
+
+	//repository
 	uomRepo := repository.NewUomRepository(db)
+	productRepo := repository.NewProductRepository(db)
+
+	//Use Case
 	uomUseCase := usecase.NewUomUseCase(uomRepo)
+	productUseCase := usecase.NewProductUseCase(productRepo, uomUseCase)
 	return &Console{
-		uomUseCase: uomUseCase,
+		uomUseCase:     uomUseCase,
+		productuseCase: productUseCase,
 	}
 }
