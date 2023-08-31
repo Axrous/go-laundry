@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 	"go-laundry/model"
 )
 
@@ -11,6 +12,7 @@ type ProductRepository interface {
 	FindById(id string) (model.Product, error)
 	Update(product model.Product) error
 	Delete(id string) error
+	FindByName(name string) ([]model.Product, error)
 }
 
 type productRepository struct {
@@ -77,14 +79,44 @@ func (p *productRepository) Save(product model.Product) error {
 
 // Update implements ProductRepository.
 func (p *productRepository) Update(product model.Product) error {
-	SQL := "update product set name = $1 where id = $2"
+	SQL := "update product set name = $1, price = $2 where id = $3"
 
-	_, err := p.db.Exec(SQL, product.Name, product.Id)
+	_, err := p.db.Exec(SQL, product.Name, product.Price, product.Id)
 	if err != nil {
 		return err
 	}
 	return nil
 }
+
+func (p *productRepository) FindByName(name string) ([]model.Product, error) {
+	SQL := `select p.id, p.name, p.price, u.id, u.name from product as p join uom as u ON u.id = p.uom_id where p.name ilike $1`
+	rows, err := p.db.Query(SQL, "%"+name+"%")
+
+	if err != nil {
+		return nil, err
+	}
+
+	var products []model.Product
+	for rows.Next() {
+		product := model.Product{}
+		err := rows.Scan(
+			&product.Id,
+			&product.Name,
+			&product.Price,
+			&product.Uom.Id,
+			&product.Uom.Name,
+		)
+		if err != nil {
+			return nil, err
+		}
+		products = append(products, product)
+	}
+	if len(products) <= 0 {
+		return nil, fmt.Errorf("gaada produknya")
+	}
+	return products, nil
+}
+
 
 func NewProductRepository(db *sql.DB) ProductRepository {
 	return &productRepository{
