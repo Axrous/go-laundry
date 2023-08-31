@@ -1,0 +1,47 @@
+package config
+
+import (
+	"fmt"
+	"os"
+)
+
+type DbConfig struct {
+	Host     string
+	Port     string
+	Name     string
+	User     string
+	Password string
+	Driver   string
+}
+
+type Config struct {
+	DbConfig
+}
+
+func (c *Config) ReadConfig() error {
+	c.DbConfig = DbConfig{
+		Host:     os.Getenv("DB_HOST"),
+		Port:     os.Getenv("DB_PORT"),
+		Name:     os.Getenv("DB_NAME"),
+		User:     os.Getenv("DB_USER"),
+		Password: os.Getenv("DB_PASSWORD"),
+		Driver:   os.Getenv("DB_DRIVER"),
+	}
+
+	if c.DbConfig.Host == "" || c.DbConfig.Port == "" || c.DbConfig.Name == "" || c.DbConfig.User == "" || c.DbConfig.Password == "" || c.DbConfig.Driver == "" {
+		return fmt.Errorf("missing required env variable")
+	}
+
+	return nil
+}
+
+func NewConfig() (*Config, error) {
+	config := &Config{}
+	err := config.ReadConfig()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return config, nil
+}
