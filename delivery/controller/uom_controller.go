@@ -23,7 +23,7 @@ func (u *UomController) UomMenuForm() {
 	| 5. Cari Data Berdasarkan Id		|
 	| 6. Keluar                     	|
 	`)
-	fmt.Print("Pilih Menu (1-6): \n")
+	fmt.Print("Pilih Menu: ")
 	var selectMenuUom string
 	fmt.Scanln(&selectMenuUom)
 	switch selectMenuUom {

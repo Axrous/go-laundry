@@ -20,7 +20,7 @@ func (controller *BillController) BillMenuForm() {
 	3. Update Data By Id
 	4. Keluar
 	`)
-	fmt.Print("Pilih Menu (1-6): \n")
+	fmt.Print("Pilih Menu: ")
 	var selectMenucustomer string
 	fmt.Scanln(&selectMenucustomer)
 	switch selectMenucustomer {
@@ -38,11 +38,11 @@ func (controller *BillController) BillMenuForm() {
 func (controller *BillController) insertBillForm()  {
 	
 	var bill model.Bill
-	fmt.Println("Masukan id transaksi")
+	fmt.Print("Masukan id transaksi: ")
 	fmt.Scanln(&bill.Id)
-	fmt.Println("Masukan id Employee")
+	fmt.Print("Masukan id Employee: ")
 	fmt.Scanln(&bill.Employee.Id)
-	fmt.Println("Masukan id Customer")
+	fmt.Print("Masukan id Customer: ")
 	fmt.Scanln(&bill.Customer.Id)
 
 	//transaksi detail
@@ -51,15 +51,15 @@ func (controller *BillController) insertBillForm()  {
 	loop := true
 	for loop {
 		var billDetail model.BillDetail
-		fmt.Println("Masukan id detail")
+		fmt.Print("Masukan id detail: ")
 		fmt.Scanln(&billDetail.Id)
-		fmt.Println("Masukan product id")
+		fmt.Print("Masukan product id: ")
 		fmt.Scanln(&billDetail.Product.Id)
-		fmt.Println("Masukan product QTY")
+		fmt.Print("Masukan product QTY: ")
 		fmt.Scanln(&billDetail.Qty)
 		billDetail.BillId = bill.Id
 		billDetails = append(billDetails, billDetail)
-		fmt.Println("Masukan data lagi? (true/false)")
+		fmt.Print("Masukan data lagi? (true/false) : ")
 		fmt.Scanln(&loop)
 	}
 
