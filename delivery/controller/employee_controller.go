@@ -1,9 +1,11 @@
 package controller
 
 import (
+	"bufio"
 	"fmt"
 	"go-laundry/model"
 	"go-laundry/usecase"
+	"os"
 
 	"github.com/rodaine/table"
 )
@@ -49,7 +51,9 @@ func (controller *EmployeeController) insertFormEmployee() {
 	fmt.Print("Inputkan Id: ")
 	fmt.Scanln(&employee.Id)
 	fmt.Print("Inputkan Name: ")
-	fmt.Scanln(&employee.Name)
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	employee.Name = scanner.Text()
 	fmt.Print("Inputkan No. Hp: ")
 	fmt.Scanln(&employee.PhoneNumber)
 	fmt.Print("Inputkan Alamat: ")
@@ -78,7 +82,9 @@ func (controller *EmployeeController) updateFormemployee()  {
 	fmt.Print("Inputkan employee Id: ")
 	fmt.Scanln(&employee.Id)
 	fmt.Print("Inputkan Nama employee Baru: ")
-	fmt.Scanln(&employee.Name)
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	employee.Name = scanner.Text()
 	fmt.Print("Inputkan No Hp employee Baru: ")
 	fmt.Scanln(&employee.PhoneNumber)
 	fmt.Print("Inputkan Alamat employee Baru: ")

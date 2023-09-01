@@ -93,23 +93,15 @@ func (repository *billRepository) Save(bill model.Bill) error {
 	}
 
 	for _, billDetail := range bill.BillDetail {
-		err = repository.saveDetail(billDetail)
+		// err = repository.saveDetail(tx, billDetail)
+		SQL := "insert into bill_detail values($1, $2, $3, $4, $5)"
+		_, err := tx.Exec(SQL, billDetail.Id, billDetail.BillId, billDetail.Product.Id, billDetail.ProductPrice, billDetail.Qty)
 		if err != nil {
 			tx.Rollback()
 			return err
 		}
 	}
 	tx.Commit()
-	return nil
-}
-
-// SaveDetail
-func (repository *billRepository) saveDetail(billDetail model.BillDetail) error {
-	SQL := "insert into bill_detail values($1, $2, $3, $4, $5)"
-	_, err := repository.db.Exec(SQL, billDetail.Id, billDetail.BillId, billDetail.Product.Id, billDetail.ProductPrice, billDetail.Qty)
-	if err != nil {
-		return err
-	}
 	return nil
 }
 

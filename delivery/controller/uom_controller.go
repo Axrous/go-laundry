@@ -15,13 +15,13 @@ type UomController struct {
 func (u *UomController) UomMenuForm() {
 	fmt.Println()
 	fmt.Println(`
-	|		+++++ Master UOM +++++		|
-	| 1. Tambah Data					|
-	| 2. Lihat Data						|
-	| 3. Update Data					|
-	| 4. Hapus Data						|
-	| 5. Cari Data Berdasarkan Id		|
-	| 6. Keluar                     	|
+	+++++ Master UOM +++++
+	1. Tambah Data
+	2. Lihat Data
+	3. Update Data
+	4. Hapus Data
+	5. Cari Data Berdasarkan Id
+	6. Keluar
 	`)
 	fmt.Print("Pilih Menu: ")
 	var selectMenuUom string
@@ -59,7 +59,7 @@ func (u *UomController) ShowListUom() {
 	if err != nil {
 		fmt.Println(err)
 	}
-
+	fmt.Println("DATA UOM")
 	table := table.New("Id", "Name")
 	for _, uom := range uoms {
 		table.AddRow(uom.Id, uom.Name)
