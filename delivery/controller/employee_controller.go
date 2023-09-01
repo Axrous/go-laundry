@@ -23,7 +23,7 @@ func (controller *EmployeeController) EmployeeMenuForm() {
 	6. Cari Data Berdasarkan No. Telp
 	7. Keluar
 	`)
-	fmt.Print("Pilih Menu (1-6): \n")
+	fmt.Print("Pilih Menu: \n")
 	var selectMenuemployee string
 	fmt.Scanln(&selectMenuemployee)
 	switch selectMenuemployee {
@@ -116,7 +116,7 @@ func (controller *EmployeeController) showListemployeeById() {
 
 func (controller *EmployeeController) ShowListCustomerByPhoneNumber() {
 	var phoneNumber string
-	fmt.Println("Inputkan No. Hp")
+	fmt.Print("Inputkan No. Hp :")
 	fmt.Scanln(&phoneNumber)
 
 	employee, err := controller.employeeUseCase.FindByPhoneNumber(phoneNumber)
