@@ -12,10 +12,25 @@ type CustomerUseCase interface {
 	FindById(id string) (model.Customer, error)
 	Update(payload model.Customer) error
 	Delete(id string) error
+	FindByPhoneNumber(phoneNumber string) (model.Customer, error)
 }
 
 type customerUseCase struct {
 	repository repository.CustomerRepository
+}
+
+// FindByPhoneNumber implements CustomerUseCase.
+func (useCase *customerUseCase) FindByPhoneNumber(phoneNumber string) (model.Customer, error) {
+	if phoneNumber == "" {
+		return model.Customer{}, fmt.Errorf("no telp tidak boleh kosong")
+	}
+
+	customer, err := useCase.repository.FindByPhoneNumber(phoneNumber)
+	if err != nil {
+		return model.Customer{}, fmt.Errorf("failed to get customer with id: %v", err)
+	}
+
+	return customer, nil
 }
 
 // Create implements CustomerUseCase.
@@ -28,13 +43,20 @@ func (useCase *customerUseCase) Create(payload model.Customer) error {
 		return fmt.Errorf("name is required")
 	}
 
-	if payload.PhoneNumber == ""  {
+	if payload.PhoneNumber == "" {
 		return fmt.Errorf("phone number is required")
 	}
 
-	if payload.Address == ""  {
+	if payload.Address == "" {
 		return fmt.Errorf("address is required")
 	}
+
+	customer, _ := useCase.FindByPhoneNumber(payload.PhoneNumber)
+
+	if customer.Id != "" {
+		return fmt.Errorf("no. hape sudah digunakan")
+	}
+
 
 	err := useCase.repository.Save(payload)
 	if err != nil {
@@ -84,17 +106,17 @@ func (useCase *customerUseCase) Update(payload model.Customer) error {
 		return fmt.Errorf("id is required")
 	}
 
-	// if payload.Name == "" {
-	// 	return fmt.Errorf("name is required")
-	// }
+	if payload.Name == "" {
+		return fmt.Errorf("name is required")
+	}
 
-	// if payload.PhoneNumber == ""  {
-	// 	return fmt.Errorf("phone number is required")
-	// }
+	if payload.PhoneNumber == ""  {
+		return fmt.Errorf("phone number is required")
+	}
 
-	// if payload.Address == ""  {
-	// 	return fmt.Errorf("address is required")
-	// }
+	if payload.Address == ""  {
+		return fmt.Errorf("address is required")
+	}
 
 	_, err := useCase.FindById(payload.Id)
 	if err != nil {
@@ -103,7 +125,7 @@ func (useCase *customerUseCase) Update(payload model.Customer) error {
 
 	err = useCase.repository.Update(payload)
 	if err != nil {
-		return fmt.Errorf("cannot save new customer: %v", err)
+		return fmt.Errorf("cannot update customer: %v", err)
 	}
 
 	return nil

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"go-laundry/model"
 	"go-laundry/usecase"
+
+	"github.com/rodaine/table"
 )
 
 type UomController struct {
@@ -58,7 +60,12 @@ func (u *UomController) ShowListUom() {
 		fmt.Println(err)
 	}
 
-	fmt.Println(uoms)
+	table := table.New("Id", "Name")
+	for _, uom := range uoms {
+		table.AddRow(uom.Id, uom.Name)
+	}
+
+	table.Print()
 }
 
 func (u *UomController) UpdateFormUom()  {
@@ -92,7 +99,10 @@ func (u *UomController) ShowListUomById() {
 		fmt.Println(err)
 	}
 
-	fmt.Println(uoms)
+	table := table.New("Id", "Name")
+	table.AddRow(uoms.Id, uoms.Name)
+
+	table.Print()
 }
 
 func NewUomController(uomUseCase usecase.UomUseCase) *UomController  {

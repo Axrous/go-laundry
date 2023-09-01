@@ -11,10 +11,23 @@ type CustomerRepository interface {
 	FindById(id string) (model.Customer, error)
 	Update(customer model.Customer) error
 	Delete(id string) error
+	FindByPhoneNumber(phoneNumber string) (model.Customer, error)
 }
 
 type customerRepository struct {
 	db *sql.DB
+}
+
+// FindByPhoneNumber implements CustomerRepository.
+func (repository *customerRepository) FindByPhoneNumber(phoneNumber string) (model.Customer, error) {
+	SQL := "select id, name, phone_number, address from customer where phone_number = $1"
+	row := repository.db.QueryRow(SQL, phoneNumber)
+	var customer model.Customer
+	err := row.Scan(&customer.Id, &customer.Name, &customer.PhoneNumber, &customer.Address)
+	if err != nil {
+		return model.Customer{}, err
+	}
+	return customer, nil
 }
 
 // Delete implements CustomerRepository.
@@ -30,10 +43,10 @@ func (repository *customerRepository) Delete(id string) error {
 // FindAll implements CustomerRepository.
 func (repository *customerRepository) FindAll() ([]model.Customer, error) {
 	rows, err := repository.db.Query("select id, name, phone_number, address from customer")
-	if err !=nil {
+	if err != nil {
 		return nil, err
 	}
-	
+
 	var customers []model.Customer
 	for rows.Next() {
 		customer := model.Customer{}

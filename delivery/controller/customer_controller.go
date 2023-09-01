@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"go-laundry/model"
 	"go-laundry/usecase"
+
+	"github.com/rodaine/table"
 )
 
 type CustomerController struct {
@@ -12,13 +14,14 @@ type CustomerController struct {
 
 func (controller *CustomerController) CustomerMenuForm() {
 	fmt.Println(`
-	|		+++++ Master Customer +++++		|
-	| 1. Tambah Data					|
-	| 2. Lihat Data						|
-	| 3. Update Data					|
-	| 4. Hapus Data						|
-	| 5. Cari Data Berdasarkan Id		|
-	| 6. Keluar                     	|
+	+++++ Master Customer +++++
+	1. Tambah Data
+	2. Lihat Data
+	3. Update Data
+	4. Hapus Data
+	5. Cari Data Berdasarkan Id
+	6. Cari Data Berdasarkan No. Telp
+	7. Keluar
 	`)
 	fmt.Print("Pilih Menu (1-6): \n")
 	var selectMenucustomer string
@@ -35,6 +38,8 @@ func (controller *CustomerController) CustomerMenuForm() {
 	case "5":
 		controller.showListCustomerById()
 	case "6":
+		controller.ShowListCustomerByPhoneNumber()
+	case "7":
 		return
 	}
 }
@@ -61,7 +66,12 @@ func (controller *CustomerController) showListCustomer() {
 		fmt.Println(err)
 	}
 
-	fmt.Println(customers)
+	table := table.New("Id", "Name", "Phone Number", "Address")
+	for _, customer := range customers {
+		table.AddRow(customer.Id, customer.Name, customer.PhoneNumber, customer.Address)
+	}
+
+	table.Print()
 }
 
 func (controller *CustomerController) updateFormCustomer()  {
@@ -94,12 +104,31 @@ func (controller *CustomerController) showListCustomerById() {
 	var id string
 	fmt.Print("Inputkan Id customer: ")
 	fmt.Scanln(&id)
-	customers, err := controller.customerUseCase.FindById(id)
+	customer, err := controller.customerUseCase.FindById(id)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	fmt.Println(customers)
+	table := table.New("Id", "Name", "Phone Number", "Address")
+	table.AddRow(customer.Id, customer.Name, customer.PhoneNumber, customer.Address)
+
+	table.Print()
+}
+
+func (controller *CustomerController) ShowListCustomerByPhoneNumber() {
+	var phoneNumber string
+	fmt.Println("Inputkan No. Hp")
+	fmt.Scanln(&phoneNumber)
+
+	customer, err := controller.customerUseCase.FindByPhoneNumber(phoneNumber)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	table := table.New("Id", "Name", "Phone Number", "Address")
+	table.AddRow(customer.Id, customer.Name, customer.PhoneNumber, customer.Address)
+
+	table.Print()
 }
 
 func NewCustomerController(customerUseCase usecase.CustomerUseCase) *CustomerController  {

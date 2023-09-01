@@ -11,10 +11,23 @@ type EmployeeRepository interface {
 	FindById(id string) (model.Employee, error)
 	Update(employee model.Employee) error
 	Delete(id string) error
+	FindByPhoneNumber(phoneNumber string) (model.Employee, error)
 }
 
 type employeeRepository struct {
 	db *sql.DB
+}
+
+// FindByPhoneNumber implements EmployeeRepository.
+func (repository *employeeRepository) FindByPhoneNumber(phoneNumber string) (model.Employee, error) {
+	SQL := "select id, name, phone_number, address from employee where phone_number = $1"
+	row := repository.db.QueryRow(SQL, phoneNumber)
+	var employee model.Employee
+	err := row.Scan(&employee.Id, &employee.Name, &employee.PhoneNumber, &employee.Address)
+	if err != nil {
+		return model.Employee{}, err
+	}
+	return employee, nil
 }
 
 // Delete implements employeeRepository.
@@ -30,10 +43,10 @@ func (repository *employeeRepository) Delete(id string) error {
 // FindAll implements employeeRepository.
 func (repository *employeeRepository) FindAll() ([]model.Employee, error) {
 	rows, err := repository.db.Query("select id, name, phone_number, address from employee")
-	if err !=nil {
+	if err != nil {
 		return nil, err
 	}
-	
+
 	var employees []model.Employee
 	for rows.Next() {
 		employee := model.Employee{}

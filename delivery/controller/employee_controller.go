@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"go-laundry/model"
 	"go-laundry/usecase"
+
+	"github.com/rodaine/table"
 )
 
 type EmployeeController struct {
@@ -12,13 +14,14 @@ type EmployeeController struct {
 
 func (controller *EmployeeController) EmployeeMenuForm() {
 	fmt.Println(`
-	|		+++++ Master employee +++++		|
-	| 1. Tambah Data					|
-	| 2. Lihat Data						|
-	| 3. Update Data					|
-	| 4. Hapus Data						|
-	| 5. Cari Data Berdasarkan Id		|
-	| 6. Keluar                     	|
+	+++++ Master employee +++++
+	1. Tambah Data
+	2. Lihat Data
+	3. Update Data
+	4. Hapus Data
+	5. Cari Data Berdasarkan Id
+	6. Cari Data Berdasarkan No. Telp
+	7. Keluar
 	`)
 	fmt.Print("Pilih Menu (1-6): \n")
 	var selectMenuemployee string
@@ -35,6 +38,8 @@ func (controller *EmployeeController) EmployeeMenuForm() {
 	case "5":
 		controller.showListemployeeById()
 	case "6":
+		controller.ShowListCustomerByPhoneNumber()
+	case "7":
 		return
 	}
 }
@@ -60,8 +65,12 @@ func (controller *EmployeeController) showListemployee() {
 	if err != nil {
 		fmt.Println(err)
 	}
+	table := table.New("Id", "Name", "Phone Number", "Address")
+	for _, employee := range employees {
+		table.AddRow(employee.Id, employee.Name, employee.PhoneNumber, employee.Address)
+	}
 
-	fmt.Println(employees)
+	table.Print()
 }
 
 func (controller *EmployeeController) updateFormemployee()  {
@@ -94,12 +103,32 @@ func (controller *EmployeeController) showListemployeeById() {
 	var id string
 	fmt.Print("Inputkan Id employee: ")
 	fmt.Scanln(&id)
-	employees, err := controller.employeeUseCase.FindById(id)
+	employee, err := controller.employeeUseCase.FindById(id)
 	if err != nil {
 		fmt.Println(err)
 	}
+	table := table.New("Id", "Name", "Phone Number", "Address")
+		table.AddRow(employee.Id, employee.Name, employee.PhoneNumber, employee.Address)
 
-	fmt.Println(employees)
+
+	table.Print()
+}
+
+func (controller *EmployeeController) ShowListCustomerByPhoneNumber() {
+	var phoneNumber string
+	fmt.Println("Inputkan No. Hp")
+	fmt.Scanln(&phoneNumber)
+
+	employee, err := controller.employeeUseCase.FindByPhoneNumber(phoneNumber)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	table := table.New("Id", "Name", "Phone Number", "Address")
+		table.AddRow(employee.Id, employee.Name, employee.PhoneNumber, employee.Address)
+
+
+	table.Print()
 }
 
 func NewEmployeeController(employeeUseCase usecase.EmployeeUseCase) *EmployeeController  {

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"go-laundry/model"
 	"go-laundry/usecase"
+
+	"github.com/rodaine/table"
 )
 
 type ProductController struct {
@@ -14,13 +16,13 @@ type ProductController struct {
 func (p *ProductController) UProductMenuForm() {
 	fmt.Println()
 	fmt.Println(`
-	|		+++++ Master Produk +++++	|
-	| 1. Tambah Data					|
-	| 2. Lihat Data						|
-	| 3. Update Data					|
-	| 4. Hapus Data						|
-	| 5. Cari Data Berdasarkan Nama		|
-	| 6. Keluar                     	|
+	+++++ Master Produk +++++
+	1. Tambah Data
+	2. Lihat Data
+	3. Update Data
+	4. Hapus Data
+	5. Cari Data Berdasarkan Nama
+	6. Keluar
 	`)
 	fmt.Print("Pilih Menu (1-6): \n")
 	var selectMenuUom string
@@ -71,8 +73,12 @@ func (p *ProductController) showListProducts()  {
 	if err != nil {
 		fmt.Println(err)
 	}
+	table := table.New("Id", "Name", "Price", "Uom")
+	for _, product := range products {
+		table.AddRow(product.Id, product.Name, product.Price, product.Uom.Name)
+	}
 
-	fmt.Println(products)
+	table.Print()
 }
 
 func (p *ProductController) updateFormproduct() {
@@ -115,12 +121,16 @@ func (p *ProductController) showListproductByName() {
 	var name string
 	fmt.Print("Inputkan nama produk: ")
 	fmt.Scanln(&name)
-	uoms, err := p.productUseCase.FindByName(name)
+	products, err := p.productUseCase.FindByName(name)
 	if err != nil {
 		fmt.Println(err)
 	}
+	table := table.New("Id", "Name", "Price", "Uom")
+	for _, product := range products {
+		table.AddRow(product.Id, product.Name, product.Price, product.Uom.Name)
+	}
 
-	fmt.Println(uoms)
+	table.Print()
 }
 
 func NewProductController(productUseCase usecase.ProductUseCase, uomUseCase usecase.UomUseCase) *ProductController  {

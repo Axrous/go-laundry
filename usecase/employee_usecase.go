@@ -12,10 +12,25 @@ type EmployeeUseCase interface {
 	FindById(id string) (model.Employee, error)
 	Update(payload model.Employee) error
 	Delete(id string) error
+	FindByPhoneNumber(phoneNumber string) (model.Employee, error)
 }
 
 type employeeUseCase struct {
 	repository repository.EmployeeRepository
+}
+
+// FindByPhoneNumber implements CustomerUseCase.
+func (useCase *employeeUseCase) FindByPhoneNumber(phoneNumber string) (model.Employee, error) {
+	if phoneNumber == "" {
+		return model.Employee{}, fmt.Errorf("no telp tidak boleh kosong")
+	}
+
+	employee, err := useCase.repository.FindByPhoneNumber(phoneNumber)
+	if err != nil {
+		return model.Employee{}, fmt.Errorf("failed to get Employee with id: %v", err)
+	}
+
+	return employee, nil
 }
 
 // Create implements employeeUseCase.
@@ -34,6 +49,12 @@ func (useCase *employeeUseCase) Create(payload model.Employee) error {
 
 	if payload.Address == ""  {
 		return fmt.Errorf("address is required")
+	}
+
+	employee, _ := useCase.FindByPhoneNumber(payload.PhoneNumber)
+
+	if employee.Id != "" {
+		return fmt.Errorf("no. hape sudah digunakan")
 	}
 
 	err := useCase.repository.Save(payload)

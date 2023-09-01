@@ -14,17 +14,18 @@ type Console struct {
 	productuseCase usecase.ProductUseCase
 	customerUseCase usecase.CustomerUseCase
 	employeeUseCase usecase.EmployeeUseCase
+	billUseCase usecase.BillUseCase
 }
 
 func (c *Console) showMainMenu() {
 	fmt.Println(`
-	|+++++ Enigma Laundry Menu +++++|
-	| 1. Master UOM                 |
-	| 2. Master Product             |
-	| 3. Master Customer            |
-	| 4. Master Eployee             |
-	| 5. Transaksi                  |
-	| 6. Keluar                     |
+	+++++ Enigma Laundry Menu +++++
+	1. Master UOM
+	2. Master Product
+	3. Master Customer
+	4. Master Eployee
+	5. Transaksi
+	6. Keluar
 	`)
 	fmt.Print("Pilih Menu (1-6): ")
 }
@@ -46,6 +47,7 @@ func (c *Console) Run() {
 		case "4":
 			controller.NewEmployeeController(c.employeeUseCase).EmployeeMenuForm()
 		case "5":
+			controller.NewBillController(c.billUseCase).BillMenuForm()
 		case "6":
 			os.Exit(0)
 		}
@@ -68,17 +70,20 @@ func NewConsole() *Console {
 	productRepo := repository.NewProductRepository(db)
 	customerRepo := repository.NewCustomerRepository(db)
 	employeeRepo := repository.NewEmployeeRepository(db)
+	billRepo := repository.NewBillRepository(db)
 
 	//Use Case
 	uomUseCase := usecase.NewUomUseCase(uomRepo)
 	productUseCase := usecase.NewProductUseCase(productRepo, uomUseCase)
 	customerUseCase := usecase.NewCustomerUseCase(customerRepo)
 	employeeUseCase := usecase.NewemployeeUseCase(employeeRepo)
+	billUsecase := usecase.NewBillUseCase(billRepo, employeeUseCase, customerUseCase, productUseCase)
 
 	return &Console{
 		uomUseCase:      uomUseCase,
 		productuseCase:  productUseCase,
 		customerUseCase: customerUseCase,
 		employeeUseCase: employeeUseCase,
+		billUseCase:     billUsecase,
 	}
 }
