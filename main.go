@@ -1,7 +1,13 @@
 package main
 
-import "go-laundry/delivery"
+import (
+	"go-laundry/delivery"
+)
 
 func main() {
-	delivery.NewConsole().Run()
+	// CLI
+	// delivery.NewConsole().Run()
+
+	//Server
+	delivery.NewServer().Run()
 }
